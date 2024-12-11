@@ -1,10 +1,10 @@
-# EcoConnect 🌱  
+# EcoCredix 🌱  
 **Building a greener future through data-driven insights and community engagement.**  
 
 ---
 
 ## 📋 Overview  
-EcoConnect is a mobile app designed to promote sustainable environmental practices. By leveraging data collection, AI-powered analysis, and a reward-based system, it empowers individuals and communities to take meaningful action for a healthier planet.
+EcoCredix  is a mobile app designed to promote sustainable environmental practices. By leveraging data collection, AI-powered analysis, and a reward-based system, it empowers individuals and communities to take meaningful action for a healthier planet.
 
 ---
 
@@ -38,7 +38,9 @@ EcoConnect is a mobile app designed to promote sustainable environmental practic
 
  Prerequisites  
 Ensure the following are set up before running the application:  
-1. **code editor**
+1. **Python Environment**  
+   - Python 3.x  
+   - Required libraries
 2. **Google APIs and Tools**  
    - **Google Gemini API**  
      - Sign up for access and obtain API credentials. [Google Gemini API Documentation](https://cloud.google.com/gemini)  
