@@ -1,72 +1,218 @@
 import React, { useState, useEffect } from 'react';
-import { Paper, Typography, List, ListItem, ListItemText, Button, Box } from '@mui/material';
-import { useNavigate } from 'react-router-dom';  // Use `useNavigate` instead of `useHistory`
+import {
+  Paper,
+  Typography,
+  List,
+  ListItem,
+  ListItemText,
+  Button,
+  Box,
+  CircularProgress,
+  Divider,
+} from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import { styled } from '@mui/system';
+import { NaturePeople, CheckCircleOutline, LocalFlorist } from '@mui/icons-material';
+
+// **IMPORTANT: Adjusted import to use 'database' for Realtime Database
+// and removed Firestore imports.**
+import { database } from '../firebase';
+import { ref, onValue } from 'firebase/database'; // Import Realtime Database functions
+
+// --- Styled Components for Aesthetic Enhancements (No changes here) ---
+
+const StyledPaper = styled(Paper)(({ theme }) => ({
+  backgroundColor: '#f9fbe7', // Lighter, natural background (pale yellow-green)
+  padding: theme.spacing(4),
+  borderRadius: theme.shape.borderRadius * 3, // More rounded corners for a softer look
+  boxShadow: theme.shadows[10], // Deeper, more pronounced shadow
+  maxWidth: '700px', // Increased max-width for better content display
+  margin: '40px auto', // Centering with more vertical margin
+  border: '1px solid #dce775', // Subtle border matching the theme
+}));
+
+const TitleTypography = styled(Typography)(({ theme }) => ({
+  fontWeight: 700, // Bolder title
+  color: '#558b2f', // Darker green for a strong, natural feel
+  marginBottom: theme.spacing(4), // More space below title
+  textShadow: '1px 1px 2px rgba(0,0,0,0.1)', // Subtle text shadow
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  '& svg': {
+    marginRight: theme.spacing(1.5),
+    fontSize: '2.5rem', // Larger icon
+    color: '#8bc34a', // Lighter green for icon
+  },
+}));
+
+const StyledListItem = styled(ListItem)(({ theme }) => ({
+  backgroundColor: '#ffffff', // White background for each challenge item
+  borderRadius: theme.shape.borderRadius * 2, // Rounded corners for list items
+  marginBottom: theme.spacing(2), // Space between list items
+  padding: theme.spacing(2.5), // More padding inside list items
+  boxShadow: theme.shadows[3], // Subtle shadow for individual items
+  transition: 'transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out',
+  '&:hover': {
+    transform: 'translateY(-3px)', // Lift on hover
+    boxShadow: theme.shadows[6], // More pronounced shadow on hover
+  },
+}));
+
+const JoinButton = styled(Button)(({ theme }) => ({
+  borderRadius: '50px', // Truly pill-shaped button
+  padding: theme.spacing(1, 3), // More padding for a larger touch area
+  textTransform: 'uppercase', // Uppercase text for action
+  fontWeight: 700, // Bolder text
+  fontSize: '0.9rem', // Slightly larger font
+  background: 'linear-gradient(45deg, #8bc34a 30%, #689f38 90%)', // Green gradient
+  color: '#ffffff', // White text
+  boxShadow: theme.shadows[2], // Subtle shadow for the button
+  '&:hover': {
+    background: 'linear-gradient(45deg, #689f38 30%, #558b2f 90%)', // Darker gradient on hover
+    boxShadow: theme.shadows[4],
+  },
+}));
+
+const NoChallengesText = styled(Typography)(({ theme }) => ({
+  color: theme.palette.text.secondary,
+  textAlign: 'center',
+  padding: theme.spacing(3),
+  fontStyle: 'italic',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  '& svg': {
+    marginRight: theme.spacing(1),
+    color: theme.palette.grey[500],
+  },
+}));
+
+const LoadingContainer = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'column', // Stack spinner and text vertically
+  justifyContent: 'center',
+  alignItems: 'center',
+  minHeight: '200px', // Ensure enough space for loading indicator
+  color: theme.palette.success.main, // Green color for loading elements
+}));
+
+// --- EcoChallenge Component ---
 
 const EcoChallenge = () => {
-  const [challenges, setChallenges] = useState([]); // State to store challenges
+  const [challenges, setChallenges] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Load challenges from localStorage when the component mounts
+  const navigate = useNavigate();
+
+  // Realtime Database reference to the 'challenges' path
+  // **Using 'database' instance from your firebase.js**
+  const challengesRef = ref(database, 'challenges');
+
   useEffect(() => {
-    const storedChallenges = localStorage.getItem('challenges'); // Get challenges from localStorage
-    if (storedChallenges) {
-      setChallenges(JSON.parse(storedChallenges)); // Update state with the challenges
-    }
-  }, []); // Empty dependency array ensures this runs only once, when the component mounts
+    setLoading(true);
+    setError(null);
 
-  const navigate = useNavigate();  // Initialize `useNavigate` hook
+    // Attach a listener for real-time updates from Realtime Database
+    const unsubscribe = onValue(challengesRef, (snapshot) => {
+      try {
+        const data = snapshot.val(); // Get the data at the 'challenges' path
+        const fetchedChallenges = [];
+
+        if (data) {
+          // Realtime Database returns an object of objects, so convert to an array
+          Object.keys(data).forEach((key) => {
+            fetchedChallenges.push({
+              id: key, // The key generated by push() is the ID
+              // Ensure these properties match what you store in Realtime DB
+              // In ManageChallenges, you store 'title' and 'description'
+              name: data[key].title, // Mapping 'title' to 'name' for this component
+              description: data[key].description,
+              // You can add other fields if you want them displayed here
+              place: data[key].place,
+              mentors: data[key].mentors,
+              reason: data[key].reason,
+            });
+          });
+          // Sort the challenges for consistent display (e.g., by name/title)
+          fetchedChallenges.sort((a, b) => a.name.localeCompare(b.name));
+        }
+        setChallenges(fetchedChallenges);
+      } catch (err) {
+        console.error("Error fetching challenges from Realtime Database: ", err);
+        setError("Failed to load challenges. Please try again later.");
+      } finally {
+        setLoading(false);
+      }
+    });
+
+    // Cleanup function: detach the listener when the component unmounts
+    return () => unsubscribe();
+  }, []); // Empty dependency array means this runs once on mount and cleans up on unmount
 
   const handleJoin = (challengeId) => {
-    // Use absolute path to navigate
-    navigate(`/register-challenge/${challengeId}`);  // Absolute path to the register challenge page
+    navigate(`/register-challenge/${challengeId}`);
   };
 
   return (
-    <Paper
-      className="p-6 max-w-2xl mx-auto my-10 shadow-lg rounded-lg"
-      style={{
-        backgroundColor: '#e8f5e9',
-        padding: '20px',
-        borderRadius: '16px',
-        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
-      }}
-    >
-      <Typography variant="h4" align="center" style={{ fontWeight: 600, color: '#388e3c', marginBottom: '20px' }}>
-        EcoChallenges
-      </Typography>
-      <List>
-        {challenges.length > 0 ? (
-          challenges.map((challenge) => (
-            <ListItem
-              key={challenge.id}
-              style={{ borderBottom: '1px solid #c8e6c9', paddingBottom: '15px', marginBottom: '15px' }}
-            >
-              <Box sx={{ flex: 1 }}>
-                <ListItemText
-                  primary={<Typography variant="h6" style={{ color: '#388e3c', fontWeight: '500' }}>{challenge.name}</Typography>}
-                  secondary={<Typography variant="body2" style={{ color: '#616161' }}>{challenge.description}</Typography>}
-                />
-              </Box>
-              <Button
-                variant="outlined"
-                color="success"
-                sx={{
-                  borderRadius: '20px',
-                  '&:hover': { backgroundColor: '#388e3c', color: '#fff' },
-                  padding: '8px 16px',
-                  textTransform: 'none',
-                }}
-                onClick={() => handleJoin(challenge.id)}  // Call handleJoin with the challenge ID
-              >
-                Join
-              </Button>
-            </ListItem>
-          ))
-        ) : (
-          <Typography>No challenges available. Please check back later!</Typography>
-        )}
-      </List>
-    </Paper>
+    <StyledPaper>
+      <TitleTypography variant="h4">
+        <LocalFlorist /> EcoChallenges
+      </TitleTypography>
+
+      {loading ? (
+        <LoadingContainer>
+          <CircularProgress color="inherit" size={50} />
+          <Typography variant="h6" sx={{ marginTop: 2 }}>Loading Nature's Tasks...</Typography>
+        </LoadingContainer>
+      ) : error ? (
+        <Typography color="error" align="center" variant="h6" sx={{ padding: 3 }}>{error}</Typography>
+      ) : (
+        <List sx={{ padding: 0 }}>
+          {challenges.length > 0 ? (
+            challenges.map((challenge, index) => (
+              <React.Fragment key={challenge.id}>
+                <StyledListItem>
+                  <Box sx={{ flex: 1, marginRight: 2 }}>
+                    <ListItemText
+                      primary={
+                        <Typography variant="h6" sx={{ color: '#33691e', fontWeight: 'bold', marginBottom: 0.5 }}>
+                          {challenge.name} {/* Displaying the 'name' (which is 'title') */}
+                        </Typography>
+                      }
+                      secondary={
+                        <>
+                          <Typography variant="body1" sx={{ color: '#6d4c41' }}>
+                            {challenge.description}
+                          </Typography>
+                          {/* Optionally display other details if available and desired */}
+                          {challenge.place && <Typography variant="body2" sx={{ color: '#888' }}>Location: {challenge.place}</Typography>}
+                          {challenge.mentors && <Typography variant="body2" sx={{ color: '#888' }}>Mentors: {challenge.mentors}</Typography>}
+                        </>
+                      }
+                    />
+                  </Box>
+                  <JoinButton
+                    variant="contained"
+                    onClick={() => handleJoin(challenge.id)}
+                    startIcon={<CheckCircleOutline />}
+                  >
+                    Join Challenge
+                  </JoinButton>
+                </StyledListItem>
+                {index < challenges.length - 1 && <Divider component="li" sx={{ margin: '0 0 16px 0', borderColor: '#dce775' }} />}
+              </React.Fragment>
+            ))
+          ) : (
+            <NoChallengesText variant="body1">
+              <NaturePeople /> No active challenges right now. Check back soon for new ways to make an impact!
+            </NoChallengesText>
+          )}
+        </List>
+      )}
+    </StyledPaper>
   );
 };
- 
+
 export default EcoChallenge;

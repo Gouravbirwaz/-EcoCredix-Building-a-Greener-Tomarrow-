@@ -12,6 +12,7 @@ import {
   TextField,
 } from "@mui/material";
 import { ThumbUp, Favorite, EmojiEmotions } from "@mui/icons-material";
+import { database } from "../firebase"; // Import the Firebase database instance
 import { useNavigate } from "react-router-dom";
 
 function Community() {
@@ -19,6 +20,7 @@ function Community() {
   const [isLoading, setIsLoading] = useState(true);
   const [reactions, setReactions] = useState({});
   const navigate = useNavigate(); // Hook to navigate
+  const [forumTopics, setForumTopics] = useState([]);
 
   const fundingAlerts = [
     {
@@ -57,6 +59,24 @@ function Community() {
       } catch (error) {
         console.error("Error fetching eco-friendly news:", error);
       } finally {
+        setIsLoading(false);
+      }
+    };
+
+    const fetchForumTopics = async () => {
+      try {
+        const topicsRef = database.ref("forum/topics");
+        topicsRef.on("value", (snapshot) => {
+          const topicsData = snapshot.val();
+          if (topicsData) {
+            const topicsList = Object.keys(topicsData).map((key) => ({
+              id: key,
+              ...topicsData[key],
+            }));
+            setForumTopics(topicsList);
+          }
+        });
+      }finally{
         setIsLoading(false);
       }
     };
@@ -284,6 +304,45 @@ function Community() {
           <Typography variant="body2" color="text.secondary" sx={{ textAlign: "center" }}>
             No eco-related news available at the moment.
           </Typography>
+        )}
+      </Box>
+
+      {/* Community Forum Section */}
+      <Box sx={{ mt: 6 }}>
+        <Typography
+          variant="h5"
+          sx={{
+            fontWeight: 600,
+            mb: 3,
+            color: "#0277bd",
+          }}
+        >
+          💬 Community Forum
+        </Typography>
+        {forumTopics.length > 0 ? (
+          <Grid container spacing={2}>
+            {forumTopics.map((topic) => (
+              <Grid item xs={12} sm={6} md={4} key={topic.id}>
+                <Card
+                  sx={{
+                    borderRadius: 3,
+                    boxShadow: 2,
+                    backgroundColor: "#e1f5fe",
+                    transition: "transform 0.2s ease-in-out",
+                    "&:hover": { transform: "scale(1.02)" },
+                  }}
+                >
+                  <CardContent>
+                    <Typography variant="h6" sx={{ fontWeight: 600, color: "#01579b" }}>
+                      {topic.title}
+                    </Typography>
+                  </CardContent>
+                </Card>
+              </Grid>
+            ))}
+          </Grid>
+        ) : (
+          <Typography variant="body2" color="text.secondary" sx={{ textAlign: "center" }}>No forum topics available yet.</Typography>
         )}
       </Box>
     </Box>
