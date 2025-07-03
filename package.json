@@ -34,6 +34,7 @@
     "source-map-loader": "^5.0.0"
   },
   "scripts": {
+    "dev": "next dev" ,
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",

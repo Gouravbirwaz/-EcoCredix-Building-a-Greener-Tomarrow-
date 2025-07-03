@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
-import { auth, createUserWithEmailAndPassword, database, ref, set } from '../firebase';
+import { auth, createUserWithEmailAndPassword, database, ref, set } from '../app/firebase';
 import background from '../assets/main_back.jpeg';
 
 const Signup = () => {
