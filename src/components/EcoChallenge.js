@@ -119,7 +119,7 @@ const EcoChallenge = () => {
       try {
         const data = snapshot.val(); // Get the data at the 'challenges' path
         const fetchedChallenges = [];
-
+        console.log(data);
         if (data) {
           // Realtime Database returns an object of objects, so convert to an array
           Object.keys(data).forEach((key) => {
