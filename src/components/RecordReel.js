@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Box, Button, Typography, LinearProgress, IconButton } from '@mui/material';
 import { ref, set } from 'firebase/database';
-import { auth, db,database } from '../app/firebase';
+import { auth, db,database } from '../firebase';
 import { AccessTime, LocationOn } from '@mui/icons-material';
 import { toast } from 'react-toastify';  // To use toast notifications
 import 'react-toastify/dist/ReactToastify.css'; 

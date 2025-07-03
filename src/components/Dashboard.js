@@ -12,7 +12,7 @@ import {
   Paper,
 } from '@mui/material';
 import { getDatabase, ref, push } from 'firebase/database';
-import { database } from '../app/firebase';
+import { database } from '../firebase';
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
 function Dashboard() {
