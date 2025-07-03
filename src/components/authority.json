@@ -2,6 +2,9 @@
     "Administor": {
       "email": "gourav@gmail.com",
       "password": "Gourav@123"
+    },
+    "GEMINI_API":{
+     "api":"AIzaSyA7g56-i2W-shBTauI4GlhAqo7hpPvjgKA"
     }
   }
   

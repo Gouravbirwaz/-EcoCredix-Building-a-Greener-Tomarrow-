@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { getAuth } from 'firebase/auth';
+import api from './authority.json'
 
 import {
   Box,
@@ -65,7 +66,7 @@ function Dashboard() {
   }, []);
 
   const fetchRecommendations = async (weatherData) => {
-    const genAI = new GoogleGenerativeAI("AIzaSyA7g56-i2W-shBTauI4GlhAqo7hpPvjgKA");
+    const genAI = new GoogleGenerativeAI(api.GEMINI_API.api);
     try {
       const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
