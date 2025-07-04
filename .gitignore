@@ -70,4 +70,4 @@ node_modules/
 
 .authority
 
-.firebase
+src/firebase
