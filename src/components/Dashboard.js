@@ -68,7 +68,7 @@ function Dashboard() {
   const fetchRecommendations = async (weatherData) => {
     const genAI = new GoogleGenerativeAI(api.GEMINI_API.api);
     try {
-      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+      const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 
       const prompt = `Based on the following weather conditions:
       - Temperature: ${weatherData.main.temp}°C
