@@ -50,7 +50,7 @@ function Community() {
       setIsLoading(true);
       try {
         const response = await fetch(
-          `https://newsapi.org/v2/everything?q=eco OR environment OR "eco-friendly" OR "green initiatives" OR sustainability&sortBy=publishedAt&apiKey=4900417be534438288eceeea64e5028c`
+          `https://newsapi.org/v2/everything?q=eco OR environment OR "eco-friendly" OR "green initiatives" OR sustainability&sortBy=publishedAt&apiKey=${process.env.REACT_APP_NEWS_API}`
         );
         const data = await response.json();
         if (data.articles) {

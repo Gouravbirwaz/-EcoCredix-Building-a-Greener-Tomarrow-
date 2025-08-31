@@ -22,6 +22,11 @@ import { getDatabase, ref, push } from 'firebase/database';
 import { database } from '../firebase';
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
+const apiKey = process.env.REACT_APP_GEMINI_API_KEY;
+
+
+
+
 function Dashboard() {
   const [openDialog, setOpenDialog] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -62,20 +67,20 @@ function Dashboard() {
       }
     };
 
-    fetchWeather();
+    fetchWeather(); 
   }, []);
 
   const fetchRecommendations = async (weatherData) => {
-    const genAI = new GoogleGenerativeAI(api.GEMINI_API.api);
+    const genAI = new GoogleGenerativeAI(apiKey);
     try {
-      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+      const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 
       const prompt = `Based on the following weather conditions:
       - Temperature: ${weatherData.main.temp}°C
       - Humidity: ${weatherData.main.humidity}%
       - Wind Speed: ${weatherData.wind.speed} m/s
       
-      Provide exactly 6 environmentally friendly tree recommendations for these conditions to keep climate sustainable. 
+      Provide exactly 6 environmentally friendly indian tree recommendations for these conditions to keep climate sustainable. 
       For each tree, provide the information in this exact format (no asterisks, bullets, or markdown):
       
       TREE 1:
