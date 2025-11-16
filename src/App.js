@@ -20,6 +20,7 @@ import DonationPage from './components/DonationPage';
 import CreditRequests from './components/CreditRequests';
 import ManageChallenges from './components/ManageChallenges';
 import Statistics from './components/Statistics';
+import Leaderboard from "./components/Leaderboard"; // Import Leaderboard component
 
 
 const appTheme = createTheme({
@@ -56,6 +57,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/leaderboard" element={<Leaderboard />} />   {/* Add Leaderboard route */}
           <Route path="/profile" element={<Profile />} />
           <Route path="/reels" element={<Reels />} />
           <Route path="/eco-challenge" element={<EcoChallenge />} />
