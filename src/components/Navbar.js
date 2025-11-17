@@ -33,6 +33,8 @@ import GroupIcon from '@mui/icons-material/Group';
 import PersonIcon from '@mui/icons-material/Person';
 import UploadIcon from '@mui/icons-material/Upload';
 import LanguageIcon from '@mui/icons-material/Language';
+import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
+
 
 function Navbar({ user }) {
   const { t, i18n } = useTranslation();
@@ -102,6 +104,7 @@ function Navbar({ user }) {
   const navigationItems = [
     { name: t('dashboard'), path: '/dashboard', icon: <DashboardIcon />, onClick: handleDashboardRedirect },
     { name: t('reels'), path: '/reels', icon: <MovieIcon /> },
+    { name: 'Leaderboard', path: '/leaderboard', icon: <EmojiEventsIcon /> },
     { name: t('ecoChallenge'), path: '/eco-challenge', icon: <ForestIcon /> },
     { name: t('community'), path: '/community', icon: <GroupIcon /> },
     { name: t('profile'), path: '/profile', icon: <PersonIcon /> },
