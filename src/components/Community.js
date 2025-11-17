@@ -14,6 +14,7 @@ import {
 import { ThumbUp, Favorite, EmojiEmotions } from "@mui/icons-material";
 import { database } from "../firebase"; // Import the Firebase database instance
 import { useNavigate } from "react-router-dom";
+import CommunityChat from './CommunityChat';
 
 function Community() {
   const [ecoNews, setEcoNews] = useState([]);
@@ -21,6 +22,7 @@ function Community() {
   const [reactions, setReactions] = useState({});
   const navigate = useNavigate(); // Hook to navigate
   const [forumTopics, setForumTopics] = useState([]);
+  
 
   const fundingAlerts = [
     {
@@ -344,6 +346,10 @@ function Community() {
         ) : (
           <Typography variant="body2" color="text.secondary" sx={{ textAlign: "center" }}>No forum topics available yet.</Typography>
         )}
+      </Box>
+      {/* Community Chat Section */}
+      <Box sx={{ mt: 3 }}>
+        <CommunityChat defaultRoom="general" />
       </Box>
     </Box>
   );
