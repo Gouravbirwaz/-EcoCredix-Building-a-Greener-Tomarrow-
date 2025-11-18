@@ -23,9 +23,22 @@ const app = initializeApp(firebaseConfig);
 // Initialize Firebase services
 const auth = getAuth(app);
 const database = getDatabase(app);
-const db = getFirestore(app);
+const firestore = getFirestore(app); // Note: You initialize getFirestore twice (as db and firestore)
 const storage = getStorage(app);
-const firestore = getFirestore(app);
+
+// Use a single name for Firestore for clarity in exports
+const db = firestore; 
 
 // Export Firebase services and app for use in other files
-export { app, auth, createUserWithEmailAndPassword, database, db, ref, set, push, storage, firestore };  // Export 'push' here
+export { 
+  app, 
+  auth, 
+  createUserWithEmailAndPassword, 
+  database, 
+  db, // Exporting the Firestore instance
+  ref, 
+  set, 
+  push, 
+  storage, 
+  firestore // Exporting the Firestore instance again (as 'firestore') 
+};
