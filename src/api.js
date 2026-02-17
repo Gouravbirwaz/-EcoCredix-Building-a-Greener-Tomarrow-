@@ -12,6 +12,7 @@ import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
  * @param {number} longitude 
  * @returns {Promise<object | null>} Environmental data object or null on failure.
  */
+
 export const fetchEnvironmentalData = async (latitude, longitude) => {
     // IMPORTANT: Ensure you have set this key in your project's environment variables.
     const apiKey = process.env.REACT_APP_GEMINI_API_KEY; 
@@ -42,6 +43,7 @@ export const fetchEnvironmentalData = async (latitude, longitude) => {
  * * @param {object} reportData - The data from the IssueReportingPage form.
  * @returns {Promise<void>}
  */
+
 export const submitIssueReport = async (reportData) => {
     // Ensure we have a database connection
     if (!db) {
